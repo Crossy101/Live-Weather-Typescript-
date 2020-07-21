@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WeatherApp</title>
+
+    <link rel="icon" href="Icons/WeatherIcon.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12" style="text-align: center;">
+                <h3>Real Live Weather App</h3>
+            </div>
+        </div>
+        <div class="row p-2" style="margin-right: 20%; margin-left: 25%;">
+                <div class="col-10" style="padding: 0; margin: 0;">
+                    <input type="text" class="form-control" name="searchLocation" id="searchLocation" autocomplete="off" placeholder="Search Location">
+                </div>
+                <div class="col-2" style="padding: 0; margin: 0;">
+                    <button id="SearchWeatherButton" class="btn btn-primary" type="button">Search</button>
+                </div>
+        </div>
+        <div class="row text-center" style="padding-top: 0.5%;">
+            <div class="col-12">
+                <button class="btn btn-success" id="currentLocationButton" style="text-align: center;" type="button">Get Current Location</button>
+            </div>
+        </div>
+
+        <div class="row" style="display: inline; text-align: center;">
+            <div class="col-12" style="padding-right: 12%; padding-left: 12%;">
+                <div class="card" style="border: 0px;">
+                    <div class="card-body" id="weatherPanel">
+                        <h5 class="card-title">Daily Weather Update</h5>
+                        <div class="row">
+                            <div class="col-12">
+                                <img src="Images/<%= darkskyData.currently.icon %>.png" style="max-width: 256px; max-height: 256px;">
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top: 5%;">
+                            <div class="col-12">
+                                <h3>Location</h3>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h2>
+                                            <span id="locationName">
+                                                <%= mapboxData.features[0].place_name %>
+                                            </span>
+                                        </h2>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top: 5%;">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <h3>Latitude</h3>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span id="locationLatitude">
+                                            <%= darkskyData.latitude %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <h3>Longitude</h3>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span id="locationLongitude">
+                                            <%= darkskyData.longitude %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top: 5%;">
+                            <div class="col-lg-4 col-md-12 col-sm-12"><h3>Temperature</h3>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h2>
+                                            <span id="temperatureText">
+                                                <%= darkskyData.currently.temperature %>
+                                            </span>&deg;C
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12 col-sm-12"><h3>Humidity</h3>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h2>
+                                            <span id="humidityText">
+                                                <%= darkskyData.currently.humidity %>%
+                                            </span>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12 col-sm-12"><h3>Preciptation</h3>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h2>
+                                            <span id="precipProbabilityText">
+                                                <%= darkskyData.currently.precipProbability %>%
+                                            </span>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12" style="text-align: center;">
+                <span id="refreshTimer">Live update in: 60 seconds</span>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    
+    <style>
+        @font-face {
+            font-family: mainFont;
+            src: url("mainfont.ttf") format('truetype');
+        }
+
+        body {
+            font-family: mainFont;
+            color: #254E58;
+            background-color: #5AB9EA;
+        }
+
+        #searchLocation {
+            text-align: center;
+        }
+
+        #weatherPanel {
+            background-color: #84CEEB;
+            border: 0;
+        }
+    </style>
+
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <script>
+        let x = 60;
+
+        setInterval(() => {
+            if(x == 0)
+            {
+                let currentLocation =  $("#locationName").text();
+                $.ajax({url: `GetWeatherDetails/${currentLocation}`, success: function(result){
+                    if(result.err == "")
+                    {
+                        var currentLocation = result.mapboxData.features[0].place_name;
+                        var currentTemperature = result.darkskyData.currently.temperature;
+                        var currentHumidity = result.darkskyData.currently.humidity;
+                        var currentPrecipProbability = result.darkskyData.currently.precipProbability;
+
+                        $("#temperatureText").text(`${currentTemperature}`);
+                        $("#humidityText").text(`${currentHumidity}%`);
+                        $("#precipProbabilityText").text(`${currentPrecipProbability}%`);
+                        $("#locationName").text(`${currentLocation}`);
+
+                        console.log("Updated Weather!");
+                    }
+                }});
+                x = 60;
+            }
+            x--;
+            $("#refreshTimer").text("Live update in: " + x + " seconds");
+        }, 1000);
+    </script>
+
+    <script>
+        $("#SearchWeatherButton").click(() => {
+            
+            var location = $("#searchLocation").val();
+            if(location.length >= 1)
+            {
+                GetLatestWeatherLocation(location);
+            }
+        });
+
+        function GetLatestWeatherLocation(location)
+        {
+            $.ajax({url: `GetWeatherDetails/${location}`, success: function(result){
+                if(result.err == "")
+                {
+                    console.log(result);
+
+                    let currentLocation = result.mapboxData.features[0].place_name;
+                    let currentTemperature = result.darkskyData.currently.temperature;
+                    let currentHumidity = result.darkskyData.currently.humidity;
+                    let currentPrecipProbability = result.darkskyData.currently.precipProbability;
+                    let locationLatitude = result.darkskyData.latitude;
+                    let locationLongitude = result.darkskyData.longitude;
+
+                    $("#temperatureText").text(`${currentTemperature}`);
+                    $("#humidityText").text(`${currentHumidity}%`);
+                    $("#precipProbabilityText").text(`${currentPrecipProbability}%`);
+                    $("#locationName").text(`${currentLocation}`);
+                    $("#locationLatitude").text(`${locationLatitude}`);
+                    $("#locationLongitude").text(`${locationLongitude}`);
+                    console.log("Update Current Location Weather!");
+                }
+            }});
+        }
+    </script>
+
+    <script>
+        $("#currentLocationButton").click(() => {
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showCurrentPosition);
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        });
+
+        function showCurrentPosition(result)
+        {
+            let latitude = result.coords.latitude;
+            let longitude = result.coords.longitude;
+            $.ajax({url: `GetWeatherCoords/${longitude}/${latitude}`, success: function(result){
+                if(result.err == "")
+                {
+                    console.log(result);
+
+                    let currentLocation = result.mapboxData.features[0].place_name;
+                    let currentTemperature = result.darkskyData.currently.temperature;
+                    let currentHumidity = result.darkskyData.currently.humidity;
+                    let currentPrecipProbability = result.darkskyData.currently.precipProbability;
+
+                    $("#temperatureText").text(`${currentTemperature}`);
+                    $("#humidityText").text(`${currentHumidity}%`);
+                    $("#precipProbabilityText").text(`${currentPrecipProbability}%`);
+                    $("#locationName").text(`${currentLocation}`);
+                    $("#locationLatitude").text(`${latitude}`);
+                    $("#locationLongitude").text(`${longitude}`);
+
+                    console.log("Update Current Location Weather!");
+                }
+            }});
+        }
+    </script>
+</body>
+</html>
